@@ -6,7 +6,7 @@ See below for folder structure explanation
 03_working - stores the final datasets that were generated as a part of the exercise
 02_admindata - downloaded admin data for the tasks
 
-***************************************************OLD QUESTION PROMPTS BELOW************************************************************************************
+***************************************************  OLD QUESTION PROMPTS BELOW  ************************************************************************************
 
 This repository contains the tasks for the UNICEF Data and Analytics P3 technical evaluation.
 
