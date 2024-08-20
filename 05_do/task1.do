@@ -1,12 +1,3 @@
-cap restore
-clear all
-
-global root "C:\Users\wb525851\OneDrive - WBG\Documents\GitHub" //change to your local github location
-global repo "$root/unicef-answers" //ensure this repository is cloned
-global raw_data "$repo/01_rawdata"
-global admin_data "$repo/02_admindata"
-global working_folder "$repo/03_working"
-global output "$repo/04_output"
 
 **# 1. UNICEF Global Data Repository - ANC4 and SAB Data
 
@@ -60,7 +51,7 @@ ren obs_value anc4
 drop if inlist(country_name,"East Asia and Pacific","Europe and Central Asia","Latin America and the Caribbean","Middle East and North Africa","South Asia","Sub-Saharan Africa", "Eastern Europe and Central Asia", "Eastern and Southern Africa", "West and Central Africa") //dropping regional estimates that remained in the dataset
 drop if country_name=="North America"
 drop indicator
-save "$working_folder/anc4.dta", replace
+save "$working_folder/scratch_anc4.dta", replace
 
 restore
 
@@ -76,11 +67,11 @@ ren obs_value sba
 drop if inlist(country_name,"East Asia and Pacific","Europe and Central Asia","Latin America and the Caribbean","Middle East and North Africa","South Asia","Sub-Saharan Africa", "Eastern Europe and Central Asia", "Eastern and Southern Africa", "West and Central Africa") //dropping regional estimates that remained in the dataset
 drop if country_name=="North America"
 drop indicator
-save "$working_folder/sba.dta", replace
+save "$working_folder/scratch_sba.dta", replace
 
-merge 1:1 country_name using "$working_folder/anc4.dta", nogen
+merge 1:1 country_name using "$working_folder/scratch_anc4.dta", nogen
 
-save "$working_folder/indicators.dta", replace
+save "$working_folder/scratch_indicators.dta", replace
 
 
 **# 2. Population Data
@@ -118,7 +109,7 @@ ren regionsubregioncountryorar country_name
 ren iso3alphacode country_code
 ren birthsthousands birth_proj_2022
 
-save "$working_folder/pop_proj2022.dta", replace
+save "$working_folder/scratch_pop_proj2022.dta", replace
 
 **# 3. On Track Off Track
 
@@ -162,17 +153,17 @@ tab status2
 
 */
 
-save "$working_folder/ontrackofftrack.dta", replace
+save "$working_folder/scratch_ontrackofftrack.dta", replace
 
 **# 4. Merging all files and doing weighted-coverage calculations
 
 isid country_code
 
-merge 1:m country_code using "$working_folder/pop_proj2022.dta"
+merge 1:m country_code using "$working_folder/scratch_pop_proj2022.dta"
 keep if _m==3
 drop _m
 
-merge 1:1 country_name using "$working_folder/indicators.dta"
+merge 1:1 country_name using "$working_folder/scratch_indicators.dta"
 keep if _m==3
 drop _m
 
@@ -188,3 +179,9 @@ gen wc_anc4=numerator2_anc4/denominator
 gen wc_sba=numerator2_sba/denominator
 
 save "$working_folder/final_task1.dta", replace
+
+cd "$working_folder"
+qui fs scratch*.dta
+foreach f in `r(files)'{
+    rm `f'
+}
