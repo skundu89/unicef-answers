@@ -6,7 +6,7 @@ global repo "$root/unicef-answers" //ensure this repository is cloned
 global raw_data "$repo/01_rawdata"
 global admin_data "$repo/02_admindata"
 global working_folder "$repo/03_working"
-global output "$repo/04_output"
+global output_folder "$repo/04_output"
 global do "$repo/05_do"
 
 do "$do/task1.do"
